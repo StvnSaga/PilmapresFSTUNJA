@@ -1,0 +1,263 @@
+/*
+|--------------------------------------------------------------------------
+| app-style.css - Gaya Kustom untuk Halaman Publik PILMAPRES FST
+|--------------------------------------------------------------------------
+|
+| File ini berisi semua gaya kustom untuk landing page dan halaman publik.
+| Dikelompokkan berdasarkan komponen untuk kemudahan maintenance.
+|
+*/
+
+/* === 1. Gaya Global & Utilitas === */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa; /* Abu-abu sangat muda sebagai default */
+}
+
+.section-title {
+    color: #001C54;
+}
+
+.section-text {
+    text-align: justify;
+}
+
+.text-orange {
+    color: #FD871F !important;
+}
+
+/* Utilitas untuk garis bawah judul section */
+.underline-accent {
+    position: relative;
+    display: inline-block; /* Kunci agar lebar elemen mengikuti teks */
+    padding-bottom: 10px;
+}
+
+.underline-accent::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%; /* 1. Mulai dari tengah */
+    transform: translateX(-50%); /* 2. Geser ke kiri sejauh setengah lebarnya sendiri */
+    width: 90%; /* 3. Atur lebarnya menjadi 90% */
+    height: 4px;
+    background-color: #FD871F; /* Warna oranye */
+    border-radius: 2px;
+}
+/* Memastikan garis bawah tetap di kiri untuk judul yang rata kiri */
+.text-md-start .section-title-underline::after,
+.text-start .section-title-underline::after {
+    left: 0;
+    transform: translateX(0);
+}
+/* Memusatkan garis bawah untuk judul yang di tengah */
+.text-center .section-title-underline::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+/* === 2. Section Hero === */
+.hero-section {
+    background-color: #00135E;
+    border-radius: 0 0 20px 20px;
+    padding-bottom: 1rem;
+    color: white;
+}
+
+.hero-title-highlight {
+    color: #FD871F;
+}
+
+.hero-text {
+    text-align: justify;
+}
+
+.img-full-bottom {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    margin-bottom: -15px; /* Efek gambar 'duduk' di bawah section */
+}
+
+.btn-brand-orange {
+    color: #F6FAF9;
+    background-color: #FD871F;
+    border-color: #FD871F;
+}
+
+.btn-brand-orange:hover {
+    color: #F6FAF9;
+    background-color: #E4751B;
+    border-color: #E4751B;
+}
+
+
+/* === 3. Section Panduan === */
+.criteria-card {
+    background-color: #00135E;
+}
+
+
+/* === 4. Section Timeline (Untuk Gambar Statis) === */
+.timeline-container {
+    background-color: #00135E;
+    border-radius: 50px;
+}
+
+.timeline-subtitle {
+    color: #FD871F;
+}
+
+
+/* === 5. Section Rekam Jejak === */
+.winner-card-image {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.winner-card-major {
+    color: #FD871F;
+}
+
+/* Kustomisasi Carousel Rekam Jejak */
+
+.badge-brand-darkblue {
+    background-color: #00135E;
+    color: #fff;
+}
+
+#pemenangCarousel .carousel-item {
+    /* Ini akan memperlambat animasi geser menjadi 1.2 detik */
+    transition: transform 2 s ease-in-out;
+}
+
+#pemenangCarousel .carousel-indicators {
+    position: static;
+    margin-top: 1.5rem;
+}
+
+#pemenangCarousel .carousel-indicators button {
+    box-sizing: content-box;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    margin: 0 5px;
+    text-indent: -999px;
+    cursor: pointer;
+    background-color: #555;
+    background-clip: padding-box;
+    border: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    opacity: 0.5;
+    transition: opacity .6s ease;
+    border-radius: 50%;
+}
+
+#pemenangCarousel .carousel-indicators button.active {
+    opacity: 1;
+    background-color: #00135E;
+}
+
+
+/* === 6. Halaman Papan Peringkat === */
+.leaderboard-wrapper {
+    position: relative;
+}
+
+.leaderboard-header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    background-color: #00135E;
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+}
+
+.leaderboard-container {
+    position: relative;
+    padding-top: 80px;
+    padding-bottom: 5rem;
+}
+
+.leaderboard-card {
+    border-radius: 1rem;
+}
+
+.podium-image {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+}
+
+.podium-image.rank-1 {
+    width: 120px;
+    height: 120px;
+    border: 4px solid #ffc107;
+}
+
+.podium-scorebox {
+    background-color: #f1f3f5;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.podium-scorebox.rank-1 {
+    background-color: #fff9e6;
+    padding: 1.5rem 1rem;
+}
+
+.podium-scorebox.rank-1 h2 {
+    font-size: 3rem;
+}
+
+.podium-scorebox.rank-3 {
+    background-color: #fdeeee;
+}
+
+.leaderboard-table-rank {
+    width: 10%;
+}
+
+.leaderboard-table-avatar {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+}
+
+/* Indikator Tahun Papan Peringkat */
+.year-indicators {
+    position: static;
+    margin: 2rem auto 0;
+    justify-content: center;
+}
+
+.year-indicators button {
+    width: auto !important;
+    height: auto !important;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem !important;
+    text-indent: 0 !important;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    background-color: #e9ecef;
+    border: none !important;
+    border-radius: 20px !important;
+    transition: all 0.3s ease;
+}
+
+.year-indicators button.active {
+    color: #fff !important;
+    background-color: #00135E !important;
+}
