@@ -1,11 +1,8 @@
 @props(['item'])
 
 @php
-    // 1. Dapatkan peran pengguna yang sedang login
     $role = auth()->user()->role;
 
-    // 2. Tentukan nama rute yang benar berdasarkan peran
-    // Ini aman karena kita sudah membuat rute 'admin.riwayat.detail' dan 'panitia.riwayat.detail'
     $routeName = $role . '.riwayat.detail';
 @endphp
 

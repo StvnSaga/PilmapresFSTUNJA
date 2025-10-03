@@ -5,31 +5,21 @@
 @section('content')
     <div class="page-heading">
         <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Manajemen Role & User</h3>
-                    <p class="text-subtitle text-muted">Kelola pengguna dan hak akses sistem.</p>
-                </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Manajemen User</li>
-                        </ol>
-                    </nav>
-                </div>
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Manajemen Role & User</h3>
+                <p class="text-subtitle text-muted">Kelola pengguna dan hak akses sistem.</p>
             </div>
         </div>
     </div>
 
-        <div class="page-content">
+    <div class="page-content">
         <section class="section">
             @include('partials.panel._notification')
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Daftar Pengguna</h5>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahUserModal">
-                        <i class="bi bi-plus-circle"></i> Tambah User
+                        <i class="bi bi-plus-circle"></i> Tambah Pengguna
                     </button>
                 </div>
                 <div class="card-body">
@@ -40,7 +30,7 @@
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
                                     <th>Email</th>
-                                    <th>Role</th>
+                                    <th>Role & Spesialisasi</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -50,15 +40,18 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td><x-role-badge :role="$user->role" /></td>
                                         <td>
-                                            {{-- !! PERBAIKAN DI SINI !! --}}
-                                            {{-- Tombol hanya muncul jika user ID bukan 1 --}}
+                                            <x-role-specialization-badge :role="$user->role" :specialization="$user->jenis_juri" />
+                                        </td>
+                                        <td>
                                             @if ($user->id !== 1)
                                                 <button class="btn btn-sm btn-warning edit-btn"
                                                         data-bs-toggle="modal" data-bs-target="#editUserModal"
-                                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}"
-                                                        data-email="{{ $user->email }}" data-role="{{ $user->role }}">
+                                                        data-id="{{ $user->id }}"
+                                                        data-name="{{ $user->name }}"
+                                                        data-email="{{ $user->email }}"
+                                                        data-role="{{ $user->role }}"
+                                                        data-jenis_juri="{{ $user->jenis_juri }}">
                                                     Edit
                                                 </button>
                                                 <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline form-delete" data-confirm-text="Yakin ingin menghapus user '{{ $user->name }}'?">
@@ -82,43 +75,66 @@
         </section>
     </div>
 
-    {{-- Memanggil modal dari file partial --}}
     @include('panel.manajemen-user._tambah-user-modal')
     @include('panel.manajemen-user._edit-user-modal')
 @endsection
 
 @push('scripts')
-    {{-- Jangan lupa pindahkan script ke file eksternal jika belum --}}
-    {{-- <script src="{{ asset('assets/js/manajemen-user.js') }}"></script> --}}
-
-    {{-- Atau biarkan di sini jika Anda lebih suka --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Script untuk alert
-            const alerts = document.querySelectorAll('.auto-dismiss');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, 5000);
-            });
+            const dataTable = new simpleDatatables.DataTable(document.getElementById('table-users'));
 
-            // Script untuk modal edit
+            const tambahUserModal = document.getElementById('tambahUserModal');
+            if (tambahUserModal) {
+                tambahUserModal.addEventListener('show.bs.modal', function () {
+                    const form = this.querySelector('#form-tambah-user');
+                    if (form) {
+                        form.reset();
+                    }
+                    initializeJuriSpecializationToggle('tambah');
+                });
+            }
+
             const editUserModal = document.getElementById('editUserModal');
             if (editUserModal) {
                 editUserModal.addEventListener('show.bs.modal', function (event) {
                     const button = event.relatedTarget;
-                    const id = button.getAttribute('data-id');
-                    const name = button.getAttribute('data-name');
-                    const email = button.getAttribute('data-email');
-                    const role = button.getAttribute('data-role');
                     const form = editUserModal.querySelector('#form-edit-user');
-                    form.action = `/panel/users/${id}`; // Pastikan path ini benar
-                    form.querySelector('#edit_name').value = name;
-                    form.querySelector('#edit_email').value = email;
-                    form.querySelector('#edit_role').value = role;
+                    
+                    form.action = `/panel/users/${button.dataset.id}`;
+                    form.querySelector('#edit_name').value = button.dataset.name;
+                    form.querySelector('#edit_email').value = button.dataset.email;
+                    form.querySelector('#edit_role').value = button.dataset.role;
+                    form.querySelector('#edit_jenis_juri').value = button.dataset.jenis_juri || '';
+
+                    form.querySelector('#edit_role').dispatchEvent(new Event('change'));
                 });
             }
+
+            function initializeJuriSpecializationToggle(prefix) {
+                const roleSelect = document.getElementById(`${prefix}_role`);
+                const jenisJuriContainer = document.getElementById(`${prefix}_jenis_juri_container`);
+                const jenisJuriSelect = document.getElementById(`${prefix}_jenis_juri`);
+
+                if (!roleSelect || !jenisJuriContainer) return;
+
+                const toggleVisibility = () => {
+                    if (roleSelect.value === 'juri') {
+                        jenisJuriContainer.style.display = 'block';
+                        jenisJuriSelect.required = true;
+                    } else {
+                        jenisJuriContainer.style.display = 'none';
+                        jenisJuriSelect.required = false;
+                        jenisJuriSelect.value = '';
+                    }
+                };
+                
+                roleSelect.addEventListener('change', toggleVisibility);
+                toggleVisibility();
+            }
+
+            initializeJuriSpecializationToggle('tambah');
+            initializeJuriSpecializationToggle('edit');
         });
     </script>
 @endpush

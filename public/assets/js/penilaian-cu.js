@@ -1,10 +1,13 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Pastikan variabel klasifikasiData dan skorTabelRange ada sebelum menjalankan script
+/**
+ * Mengelola interaktivitas form penilaian Capaian Unggulan (CU).
+ * Termasuk pembaruan dinamis pada dropdown dan validasi rentang skor.
+ */
+document.addEventListener('DOMContentLoaded', function() {
     if (typeof klasifikasiData === 'undefined' || typeof skorTabelRange === 'undefined') {
         return;
     }
 
-    // Fungsi untuk memperbarui info rentang dan atribut input skor
+    // Memperbarui rentang skor dan atribut input berdasarkan pilihan klasifikasi.
     function updateSkorAndRange(row) {
         const bidang = row.querySelector('.select-bidang').value;
         const wujud = row.querySelector('.select-wujud').value;
@@ -12,23 +15,25 @@ document.addEventListener('DOMContentLoaded', function () {
         const skorInput = row.querySelector('.input-skor');
         const rangeInfo = row.querySelector('.range-info');
 
-        // Reset
+        // Reset tampilan info rentang dan input skor.
         rangeInfo.textContent = '';
         skorInput.placeholder = 'Pilih klasifikasi';
         skorInput.removeAttribute('min');
         skorInput.removeAttribute('max');
-
-        // Cek jika statusnya bukan 'final' sebelum membuat input bisa diedit
         if (skorInput.disabled === false) {
-             skorInput.readOnly = true;
+            skorInput.readOnly = true;
         }
 
         const range = skorTabelRange[bidang]?.[wujud]?.[tingkat];
 
         if (range) {
             const [minSkor, maxSkor] = range;
-            
+            skorInput.placeholder = 'Skor';
+            skorInput.min = minSkor;
+            skorInput.max = maxSkor;
+
             if (skorInput.disabled === false) {
+                // Jika skor pasti (min = max), isi otomatis dan kunci input.
                 if (minSkor === maxSkor) {
                     rangeInfo.textContent = `Skor Pasti: ${minSkor}`;
                     skorInput.value = minSkor;
@@ -38,22 +43,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     skorInput.readOnly = false;
                 }
             }
-            skorInput.placeholder = 'Skor';
-            skorInput.min = minSkor;
-            skorInput.max = maxSkor;
         }
     }
 
-    // Fungsi untuk mengelola event listener pada satu baris tabel
+    // Mengatur event listener untuk setiap baris penilaian.
     function setupRow(row) {
         const selectBidang = row.querySelector('.select-bidang');
         const selectWujud = row.querySelector('.select-wujud');
         const selectTingkat = row.querySelector('.select-tingkat');
-        
+
+        // Memperbarui dropdown 'wujud' saat 'bidang' berubah.
         selectBidang.addEventListener('change', function() {
             const bidangTerpilih = this.value;
             const wujudSaatIni = selectWujud.value;
-            
+
             selectWujud.innerHTML = '<option value="">Pilih Wujud</option>';
 
             if (bidangTerpilih && klasifikasiData[bidangTerpilih]) {
@@ -61,8 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const option = document.createElement('option');
                     option.value = wujud;
                     option.textContent = wujud;
-                    // Jika wujud yang dipilih sebelumnya ada di daftar baru, pilih kembali
-                    if(wujud === wujudSaatIni) {
+                    if (wujud === wujudSaatIni) {
                         option.selected = true;
                     }
                     selectWujud.appendChild(option);
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectWujud.addEventListener('change', () => updateSkorAndRange(row));
         selectTingkat.addEventListener('change', () => updateSkorAndRange(row));
 
-        // Panggil sekali untuk inisialisasi setiap baris saat halaman dimuat
+        // Panggil sekali untuk inisialisasi saat halaman dimuat.
         updateSkorAndRange(row);
     }
 

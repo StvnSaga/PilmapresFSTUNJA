@@ -5,7 +5,6 @@
                 <h5 class="modal-title">Edit Data Peserta</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            {{-- Form action akan diisi oleh JavaScript --}}
             <form id="form-edit-peserta" method="POST" action="" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')

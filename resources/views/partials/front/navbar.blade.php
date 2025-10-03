@@ -34,10 +34,10 @@
                 </li>
                 
                 <li class="nav-item ms-lg-3">
-                    <a href="/login" class="btn btn-primary rounded-pill px-5"
-                       style="background-color: #00135E; border-color: #00135E;">
+                    <button onclick="window.location.href='{{ route('login') }}'" class="btn btn-primary rounded-pill px-5"
+                            style="background-color: #00135E; border-color: #00135E;">
                         Masuk
-                    </a>
+                    </button>
                 </li>
             </ul>
         </div>

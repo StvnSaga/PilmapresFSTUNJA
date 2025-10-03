@@ -8,7 +8,7 @@
             <form id="form-tambah-user" method="POST" action="{{ route('admin.users.store') }}">
                 @csrf
                 <div class="modal-body">
-                    @include('panel.manajemen-user._user-form-fields', ['prefix' => 'tambah', 'isEdit' => false])
+                    @include('panel.manajemen-user._user-form-fields', ['prefix' => 'tambah', 'isEdit' => false, 'user' => null])
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

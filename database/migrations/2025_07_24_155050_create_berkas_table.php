@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('peserta_id')->constrained('pesertas')->onDelete('cascade');
 
-            $table->string('nama_berkas'); // Cth: "Juara 1 Lomba Karya Tulis Ilmiah Nasional"
-            $table->string('jenis_berkas'); // Cth: 'KTP', 'KRS', 'CU' (Capaian Unggulan)
-            $table->string('tingkat')->nullable(); // Cth: 'Nasional', 'Internasional'
-            $table->string('path_file'); // Lokasi file disimpan
+            $table->string('nama_berkas'); 
+            $table->string('jenis_berkas'); 
+            $table->string('tingkat')->nullable(); 
+            $table->string('path_file'); 
 
             $table->timestamps();
         });

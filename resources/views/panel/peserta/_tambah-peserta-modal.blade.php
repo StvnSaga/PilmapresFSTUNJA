@@ -5,7 +5,6 @@
                 <h5 class="modal-title">Tambah Peserta Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            {{-- !! PERUBAHAN UTAMA ADA DI BARIS INI !! --}}
             <form method="POST" action="{{ route('panel.peserta.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">

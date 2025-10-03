@@ -21,13 +21,12 @@ class RekamJejakController extends Controller
         if ($request->has('tahun_seleksi_id')) {
             $selectedPeriode = TahunSeleksi::find($request->tahun_seleksi_id);
             if ($selectedPeriode) {
-                // Ambil 3 peserta teratas dari periode yang dipilih
                 $top3Pesertas = Peserta::where('tahun_seleksi_id', $selectedPeriode->id)
+                    ->where('status_verifikasi', 'diverifikasi')
                     ->orderBy('skor_akhir', 'desc')
                     ->take(3)
                     ->get();
 
-                // Ambil data rekam jejak yang sudah ada untuk dicocokkan
                 $rekamJejakData = RekamJejak::where('tahun_seleksi_id', $selectedPeriode->id)
                     ->get()->keyBy('peserta_id');
             }
@@ -38,16 +37,14 @@ class RekamJejakController extends Controller
 
     public function store(Request $request)
     {
-        $validateData = $request->validate([
+        $request->validate([
             'tahun_seleksi_id' => 'required|exists:tahun_seleksis,id',
             'pemenang' => 'required|array',
             'pemenang.*.deskripsi' => 'nullable|string',
             'pemenang.*.foto' => 'nullable|image|max:2048',
         ]);
 
-
         foreach ($request->pemenang as $pesertaId => $data) {
-            // dd($data);
             $rekamJejak = RekamJejak::firstOrNew([
                 'tahun_seleksi_id' => $request->tahun_seleksi_id,
                 'peserta_id' => $pesertaId,
@@ -55,11 +52,9 @@ class RekamJejakController extends Controller
 
             $rekamJejak->peringkat = $data['peringkat'];
             $rekamJejak->deskripsi_singkat = $data['deskripsi'];
-            // dd($data["foto"]->getClientOriginalName());
-            // dd($rekamJejak->foto_path);
             $fotoKey = "pemenang.{$pesertaId}.foto";
+            
             if ($request->hasFile($fotoKey)) {
-
                 if ($rekamJejak->foto_path) {
                     Storage::disk('public')->delete($rekamJejak->foto_path);
                 }

@@ -107,10 +107,7 @@
                             @if(!$semuaCuFinal && $berkasCu->isNotEmpty())
                                 <div class="mt-3 text-end">
                                     <button type="submit" class="btn btn-primary">Simpan Draf</button>
-                                    {{-- !! PERUBAHAN DI SINI: Hapus onclick, tambahkan class & data attribute !! --}}
-                                    <button type="submit" name="finalisasi" value="true" 
-                                            class="btn btn-success btn-finalize"
-                                            data-confirm-text="Anda yakin ingin mengunci semua penilaian CU yang belum terkunci? Anda tidak akan bisa mengubahnya lagi.">
+                                    <button type="submit" name="finalisasi" value="true" class="btn btn-success btn-finalize" data-confirm-text="Anda yakin ingin mengunci semua penilaian CU yang belum terkunci? Anda tidak akan bisa mengubahnya lagi.">
                                         Simpan & Kunci Semua
                                     </button>
                                 </div>
@@ -124,10 +121,9 @@
 @endsection
 
 @push('scripts')
-    {{-- !! KONDISI DI SINI YANG DIPERBAIKI !! --}}
     @if (isset($penilaianLocked) && !$penilaianLocked)
         <script>
-            // Mengirim data dari PHP ke JavaScript eksternal
+            // Mengirim data dari PHP ke JavaScript eksternal untuk logika dinamis.
             const klasifikasiData = {!! json_encode($klasifikasiCu ?? []) !!};
             const skorTabelRange = {!! json_encode($skorTabelRange ?? []) !!};
         </script>

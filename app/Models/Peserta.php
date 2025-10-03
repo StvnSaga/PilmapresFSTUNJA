@@ -10,11 +10,6 @@ class Peserta extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'tahun_seleksi_id',
         'nama_lengkap',
@@ -24,7 +19,7 @@ class Peserta extends Model
         'no_hp',
         'ipk',
         'email',
-        'foto_path', // <-- PASTIKAN BARIS INI ADA DI SINI
+        'foto_path',
         'status_verifikasi',
         'total_skor_cu',
         'total_skor_gk',
@@ -32,9 +27,6 @@ class Peserta extends Model
         'skor_akhir',
     ];
 
-    /**
-     * Accessor untuk memeriksa apakah semua berkas wajib sudah lengkap.
-     */
     protected function berkasLengkap(): Attribute
     {
         return Attribute::make(
@@ -52,25 +44,16 @@ class Peserta extends Model
         );
     }
 
-    /**
-     * Relasi ke model Berkas.
-     */
     public function berkas()
     {
         return $this->hasMany(Berkas::class);
     }
     
-    /**
-     * Mendefinisikan relasi one-to-many ke model Penilaian.
-     */
     public function penilaians()
     {
         return $this->hasMany(Penilaian::class);
     }
 
-    /**
-     * Menghitung nilai CU yang sudah diberi bobot 45%.
-     */
     protected function nilaiCuBerbobot(): Attribute
     {
         return Attribute::make(
@@ -78,9 +61,6 @@ class Peserta extends Model
         );
     }
 
-    /**
-     * Menghitung nilai GK yang sudah diberi bobot 35%.
-     */
     protected function nilaiGkBerbobot(): Attribute
     {
         return Attribute::make(
@@ -88,9 +68,6 @@ class Peserta extends Model
         );
     }
 
-    /**
-     * Menghitung nilai BI yang sudah diberi bobot 20%.
-     */
     protected function nilaiBiBerbobot(): Attribute
     {
         return Attribute::make(
@@ -98,10 +75,6 @@ class Peserta extends Model
         );
     }
 
-    /**
-     * Menghitung ulang skor dan mengembalikan daftar peserta yang sudah diurutkan
-     * untuk periode yang sedang aktif.
-     */
     public static function getRankedListForActivePeriod()
     {
         $periodeAktif = TahunSeleksi::where('is_active', true)->first();

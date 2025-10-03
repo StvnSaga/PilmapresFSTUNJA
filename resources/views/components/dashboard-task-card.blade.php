@@ -2,9 +2,9 @@
     'title',
     'collection',
     'buttonText',
-    'buttonClass' => 'btn-info', // Warna default tombol
+    'buttonClass' => 'btn-info', 
     'routeName',
-    'routeParamName' => 'peserta', // Nama parameter default di route
+    'routeParamName' => 'peserta', 
 ])
 
 <div class="col-md-4">

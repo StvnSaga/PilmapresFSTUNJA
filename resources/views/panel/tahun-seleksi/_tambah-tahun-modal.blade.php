@@ -10,9 +10,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="tahun" class="form-label">Tahun</label>
-                        <input type="number" class="form-control @error('tahun') is-invalid @enderror" id="tahun" name="tahun" placeholder="Contoh: {{ date('Y') + 1 }}" min="2020" max="2099" required>
-                        <small class="text-muted">Masukkan tahun pelaksanaan, contoh: 2026.</small>
-                        
+                        <input type="number" class="form-control @error('tahun') is-invalid @enderror" id="tahun"
+                            name="tahun" placeholder="Contoh: {{ $tahunPlaceholder }}" min="2020" max="2099"
+                            required>
+                        <small class="text-muted">Masukkan tahun pelaksanaan {{ $tahunPlaceholder }}.</small>
+
                         @error('tahun')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

@@ -88,7 +88,6 @@
                                             <td>{{ $berkas->cu_wujud }}</td>
                                             <td>{{ $berkas->skor }}</td>
                                             <td>
-                                                {{-- PERUBAHAN DI SINI: Mengganti class 'btn-info' menjadi 'btn-outline-primary' --}}
                                                 <a href="{{ asset('storage/' . $berkas->path_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat Berkas</a>
                                             </td>
                                         </tr>
@@ -113,7 +112,7 @@
             <x-penilaian-detail-card 
                 title="Detail Nilai Gagasan Kreatif (GK)"
                 :berkas="$berkasGk"
-                :penilaians="$peserta->penilaians"
+                :penilaians="$penilaianGk"
                 :kriteriaMap="$kriteriaGkMap"
                 skorType="total_skor_gk"
                 detailType="skor_gk_detail"
@@ -126,7 +125,7 @@
             <x-penilaian-detail-card 
                 title="Detail Nilai Bahasa Inggris (BI)"
                 :berkas="$berkasSlideGk"
-                :penilaians="$peserta->penilaians"
+                :penilaians="$penilaianBi"
                 :kriteriaMap="$kriteriaBiMap"
                 skorType="total_skor_bi"
                 detailType="skor_bi_detail"

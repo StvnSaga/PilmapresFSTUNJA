@@ -1,10 +1,6 @@
 @props(['pemenang'])
 
 @php
-    // Logika cerdas untuk memilih foto:
-    // 1. Gunakan foto spesifik dari rekam jejak jika ada.
-    // 2. Jika tidak ada, gunakan foto umum dari data peserta.
-    // 3. Jika tidak ada juga, gunakan gambar default.
     $foto_rekam_jejak = $pemenang->foto_path;
     $foto_peserta = $pemenang->peserta->foto_path;
     $foto_final = $foto_rekam_jejak ?? $foto_peserta;

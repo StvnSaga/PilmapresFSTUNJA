@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body">
                 <p>Apakah Anda yakin ingin membatalkan verifikasi untuk <strong>{{ $peserta->nama_lengkap }}</strong>?</p>
-                <p class="text-danger fw-semibold">Tindakan ini akan mengubah status kembali menjadi "Menunggu" dan menghapus semua data penilaian yang mungkin sudah diberikan oleh juri.</p>
+                <p class="fw-semibold">Tindakan ini akan mengubah status kembali menjadi "Siap Diverifikasi".</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

@@ -9,11 +9,6 @@ class RekamJejak extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'tahun_seleksi_id',
         'peserta_id',
@@ -22,17 +17,11 @@ class RekamJejak extends Model
         'foto_path',
     ];
 
-    /**
-     * Mendefinisikan relasi ke model TahunSeleksi.
-     */
     public function tahunSeleksi()
     {
         return $this->belongsTo(TahunSeleksi::class);
     }
 
-    /**
-     * Mendefinisikan relasi ke model Peserta.
-     */
     public function peserta()
     {
         return $this->belongsTo(Peserta::class);

@@ -6,13 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('berkas', function (Blueprint $table) {
-            // Kolom untuk menyimpan hasil klasifikasi CU
+            // Menambahkan kolom untuk menyimpan hasil klasifikasi CU oleh panitia.
             $table->string('cu_bidang')->nullable()->after('tingkat');
             $table->string('cu_wujud')->nullable()->after('cu_bidang');
         });

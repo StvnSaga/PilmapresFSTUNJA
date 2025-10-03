@@ -12,7 +12,6 @@
         <section class="section">
             <div class="row">
                 @forelse ($riwayat as $item)
-                    {{-- Memanggil komponen baru --}}
                     <x-riwayat-card :item="$item" />
                 @empty
                     <div class="col-12">

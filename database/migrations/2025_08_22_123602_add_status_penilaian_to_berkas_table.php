@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('berkas', function (Blueprint $table) {
@@ -21,5 +18,5 @@ return new class extends Migration
         Schema::table('berkas', function (Blueprint $table) {
             $table->dropColumn('status_penilaian');
         });
-}
+    }
 };

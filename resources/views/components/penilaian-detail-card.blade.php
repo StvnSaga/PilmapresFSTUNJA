@@ -6,7 +6,7 @@
     'skorType',
     'detailType',
     'catatanType',
-    'catatanDetailType', // <-- Prop baru untuk menampung nama kolom catatan detail
+    'catatanDetailType', 
     'rataRataSkor',
     'accordionId',
 ])
@@ -35,13 +35,12 @@
                                 @if ($penilaian->$detailType)
                                     <ul class="list-group list-group-flush">
                                         @foreach($penilaian->$detailType as $key => $skor)
-                                            {{-- Menampilkan Poin Skor --}}
+
                                             <li class="list-group-item d-flex justify-content-between ps-0">
                                                 <span>{{ $kriteriaMap[$key] ?? $key }}</span>
                                                 <span class="badge bg-light-secondary">{{ $skor }}</span>
                                             </li>
                                             
-                                            {{-- !! KODE BARU: Menampilkan catatan detail jika ada !! --}}
                                             @if(isset($penilaian->$catatanDetailType[$key]))
                                                 <li class="list-group-item pt-0 pb-2 ps-2 border-0">
                                                     <small class="text-muted fst-italic">
@@ -54,7 +53,6 @@
                                     </ul>
                                 @endif
                                 
-                                {{-- Menampilkan Catatan Umum Juri --}}
                                 @if ($penilaian->$catatanType)
                                     <hr class="my-2">
                                     <p class="text-muted fst-italic mt-3">

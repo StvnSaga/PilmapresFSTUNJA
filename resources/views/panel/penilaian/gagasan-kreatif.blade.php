@@ -41,6 +41,7 @@
                 @endphp
                 <div class="row">
                     <div class="col-lg-8">
+                        {{-- Panel preview dokumen yang akan tetap terlihat saat scroll --}}
                         <div class="card sticky-top">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -126,10 +127,7 @@
                                     @if(!$isFinal)
                                     <div class="d-flex gap-2 mt-3">
                                         <button type="submit" class="btn btn-primary flex-grow-1">Simpan Draf</button>
-                                        {{-- !! PERUBAHAN DI SINI: Hapus onclick, tambahkan class & data attribute !! --}}
-                                        <button type="submit" name="finalisasi_gk" value="true" 
-                                                class="btn btn-success btn-finalize"
-                                                data-confirm-text="Anda yakin ingin mengunci penilaian GK ini? Anda tidak akan bisa mengubahnya lagi.">
+                                        <button type="submit" name="finalisasi_gk" value="true" class="btn btn-success btn-finalize" data-confirm-text="Anda yakin ingin mengunci penilaian GK ini? Anda tidak akan bisa mengubahnya lagi.">
                                             Simpan & Kunci
                                         </button>
                                     </div>

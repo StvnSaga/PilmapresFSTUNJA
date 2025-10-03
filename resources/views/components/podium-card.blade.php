@@ -8,7 +8,6 @@
 @endphp
 
 <div class="{{ $columnClass }} col-md-6 mb-4 text-center">
-    {{-- !! PERUBAHAN DI SINI !! --}}
     <img src="{{ $peserta->foto_path ? asset('storage/' . $peserta->foto_path) : asset('images/default-avatar.png') }}" alt="{{ $peserta->nama_lengkap }}" class="rounded-circle mb-3 {{ $imageClass }}">
     
     @if($isWinner)

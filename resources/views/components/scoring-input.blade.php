@@ -11,7 +11,7 @@
                class="form-control score-input" placeholder="Skor ({{ $item['min'] }}-{{ $item['max'] }})"
                min="{{ $item['min'] }}" max="{{ $item['max'] }}"
                value="{{ $value }}" required
-               {{ $disabled ? 'disabled' : '' }}> {{-- <-- PERUBAHAN DI SINI --}}
+               {{ $disabled ? 'disabled' : '' }}> 
         <span class="input-group-text feedback-span" id="feedback-{{ $item['field'] }}">-</span>
         
         <a href="#" class="input-group-text comment-toggle-btn {{ $hasCatatan ? 'text-primary' : 'text-secondary' }}" title="Tambah/Lihat Catatan">

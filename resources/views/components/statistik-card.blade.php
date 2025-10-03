@@ -1,6 +1,5 @@
 @props(['icon', 'color', 'title', 'value'])
 
-{{-- Tambahkan kelas mb-3 untuk mengatur jarak bawah standar --}}
 <div class="card mb-3">
     <div class="card-body px-4 py-4-5">
         <div class="d-flex align-items-center">

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class PenilaianCuController extends Controller
 {
-    // Rubrik CU yang statis (dari Versi 2 yang lebih ringkas)
+    // Rubrik statis untuk klasifikasi Capaian Unggulan (CU).
     private $klasifikasiCu = [
         'Kompetisi' => ['Juara-1 Perorangan', 'Juara-2 Perorangan', 'Juara-3 Perorangan', 'Kategori Juara Perorangan', 'Juara-1 Beregu', 'Juara-2 Beregu', 'Juara-3 Beregu', 'Juara Kategori Beregu'],
         'Pengakuan' => ['Pelatih/Wasit/Juri berlisensi', 'Pelatih/Wasit/Juri tidak berlisensi', 'Nara sumber/pembicara', 'Moderator', 'Lainnya (Pengakuan)'],
@@ -21,6 +21,8 @@ class PenilaianCuController extends Controller
         'Pemberdayaan atau Aksi Kemanusiaan' => ['Pemrakarsa / Pendiri', 'Koordinator Relawan', 'Relawan'],
         'Kewirausahaan' => ['Wirausaha']
     ];
+
+    // Tabel skor statis [min, max] sebagai aturan bisnis utama penilaian CU.
     private $skorTabelRange = [
         'Kompetisi' => [
             'Juara-1 Perorangan' => ['Internasional' => [40, 50], 'Regional' => [30, 40], 'Nasional' => [20, 30], 'Provinsi' => [20, 20]],
@@ -76,7 +78,6 @@ class PenilaianCuController extends Controller
 
     public function index(Request $request)
     {
-        // Menggunakan struktur rapi dari Versi 2
         $periodeAktif = TahunSeleksi::where('is_active', true)->first();
         
         $viewData = [
@@ -91,6 +92,7 @@ class PenilaianCuController extends Controller
             'lockMessage' => 'Tahap penilaian belum dibuka atau sudah selesai.',
         ];
 
+        // Mencegah penilaian jika periode tidak aktif.
         if (!$periodeAktif || $periodeAktif->status != 'penilaian') {
             return view('panel.penilaian.capaian-unggulan', $viewData);
         }
@@ -128,10 +130,9 @@ class PenilaianCuController extends Controller
         $isFinalisasi = $request->has('finalisasi');
         $pesertaId = null;
 
-        // !! VALIDASI BARU SEBELUM LOOPING !!
+        // Validasi semua skor wajib diisi sebelum proses finalisasi/penguncian.
         if ($isFinalisasi) {
             foreach ($request->klasifikasi as $berkasId => $data) {
-                // Pastikan skor tidak kosong atau 0 saat finalisasi
                 if (empty($data['skor']) || (float)$data['skor'] <= 0) {
                     $berkas = Berkas::find($berkasId);
                     $namaBerkas = $berkas ? $berkas->nama_berkas : "Berkas ID {$berkasId}";
@@ -147,6 +148,8 @@ class PenilaianCuController extends Controller
             if (!$berkas) continue;
 
             if (!$pesertaId) $pesertaId = $berkas->peserta_id;
+            
+            // Lewati berkas yang sudah dikunci untuk mencegah penimpaan data.
             if ($berkas->status_penilaian == 'final') continue;
 
             $dataToUpdate = [
@@ -168,7 +171,6 @@ class PenilaianCuController extends Controller
             ->with('notification', ['type' => 'success', 'message' => $message]);
     }
 
-    // !! FUNGSI HELPER DARI VERSI 1 DIMASUKKAN KEMBALI !!
     private function getSkorRange($bidang, $wujud, $tingkat)
     {
         return $this->skorTabelRange[$bidang][$wujud][$tingkat] ?? [0, 0];

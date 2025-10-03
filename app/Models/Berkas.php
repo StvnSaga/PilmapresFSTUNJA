@@ -14,11 +14,11 @@ class Berkas extends Model
         'nama_berkas',
         'jenis_berkas',
         'tingkat',
-        'cu_bidang', 
-        'cu_wujud',  
+        'cu_bidang',
+        'cu_wujud',
         'path_file',
         'skor',
-        'status_penilaian', // HANYA INI status yang ada di sini (untuk CU)
+        'status_penilaian',
     ];
 
     public function peserta()

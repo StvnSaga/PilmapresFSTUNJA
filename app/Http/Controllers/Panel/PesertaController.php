@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peserta;
-use App\Models\Berkas;
 use App\Models\TahunSeleksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +11,11 @@ use Illuminate\Validation\Rule;
 
 class PesertaController extends Controller
 {
+    private function adaPeriodeBerjalan()
+    {
+        return TahunSeleksi::where('status', '!=', 'selesai')->exists();
+    }
+
     public function index()
     {
         $periodeAktif = TahunSeleksi::where('is_active', true)->first();
@@ -40,10 +44,18 @@ class PesertaController extends Controller
         if (!$periodeAktif) {
             return redirect()->back()->with('notification', ['type' => 'danger', 'message' => 'Gagal menambahkan peserta, tidak ada periode seleksi yang aktif.']);
         }
+        
         $request->merge(['ipk' => str_replace(',', '.', $request->ipk)]);
+        
         $request->validate([
             'nama_lengkap' => 'required|string|min:3|max:255',
-            'nim' => 'required|string|unique:pesertas,nim,NULL,id,tahun_seleksi_id,' . $periodeAktif->id,
+            'nim' => [
+                'required',
+                'string',
+                Rule::unique('pesertas', 'nim')->where(function ($query) use ($periodeAktif) {
+                    return $query->where('tahun_seleksi_id', $periodeAktif->id);
+                }),
+            ],
             'prodi' => 'required|string',
             'angkatan' => 'required|integer|digits:4',
             'email' => 'required|email',
@@ -51,16 +63,17 @@ class PesertaController extends Controller
             'ipk' => 'nullable|numeric|min:0|max:4.00',
             'foto' => 'required|image|mimes:jpg,png|max:2048',
         ]);
+        
         $data = $request->except(['_token', 'foto']);
         $data['tahun_seleksi_id'] = $periodeAktif->id;
+        
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('foto_peserta', 'public');
             $data['foto_path'] = $path;
         }
 
-
-
         Peserta::create($data);
+        
         return redirect()->route('panel.peserta.index')->with('notification', ['type' => 'success', 'message' => 'Peserta baru berhasil ditambahkan!']);
     }
 
@@ -117,7 +130,6 @@ class PesertaController extends Controller
 
     public function destroy(Peserta $peserta)
     {
-        // Perbaikan kecil: Menghapus foto saat peserta dihapus
         if ($peserta->foto_path) {
             Storage::disk('public')->delete($peserta->foto_path);
         }
@@ -133,14 +145,22 @@ class PesertaController extends Controller
 
     public function unverify(Peserta $peserta)
     {
-        $peserta->penilaians()->delete();
         $peserta->update(['status_verifikasi' => 'menunggu']);
         return redirect()->back()->with('notification', ['type' => 'warning', 'message' => 'Verifikasi untuk ' . $peserta->nama_lengkap . ' berhasil dibatalkan.']);
     }
 
-    public function reject(Peserta $peserta)
+    public function disqualify(Peserta $peserta)
     {
-        $peserta->update(['status_verifikasi' => 'ditolak']);
-        return redirect()->back()->with('notification', ['type' => 'warning', 'message' => 'Pendaftaran untuk ' . $peserta->nama_lengkap . ' telah ditolak.']);
+        $peserta->penilaians()->delete();
+        $peserta->berkas()->where('jenis_berkas', 'CU')->update(['skor' => 0, 'status_penilaian' => null]);
+        $peserta->update([
+            'status_verifikasi' => 'ditolak',
+            'total_skor_cu' => 0,
+            'total_skor_gk' => 0,
+            'total_skor_bi' => 0,
+            'skor_akhir' => 0,
+        ]);
+        
+        return redirect()->back()->with('notification', ['type' => 'warning', 'message' => 'Pendaftaran untuk ' . $peserta->nama_lengkap . ' telah didiskualifikasi.']);
     }
 }

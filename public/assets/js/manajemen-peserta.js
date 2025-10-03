@@ -1,21 +1,26 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Menyimpan state accordion berkas yang terakhir dibuka.
     const accordionElement = document.getElementById('accordionBerkas');
     if (accordionElement) {
         const lastOpenAccordionId = sessionStorage.getItem('lastOpenAccordionId');
         if (lastOpenAccordionId) {
             const accordionToOpen = document.getElementById(lastOpenAccordionId);
             if (accordionToOpen) {
-                new bootstrap.Collapse(accordionToOpen, { toggle: true });
+                new bootstrap.Collapse(accordionToOpen, {
+                    toggle: true
+                });
             }
         }
-        accordionElement.addEventListener('show.bs.collapse', function (event) {
+        accordionElement.addEventListener('show.bs.collapse', function(event) {
             sessionStorage.setItem('lastOpenAccordionId', event.target.id);
         });
     }
 
+    // Mengelola modal upload berkas untuk mode 'store' (baru) dan 'update' (ganti).
     const uploadModal = document.getElementById('uploadBerkasModal');
     if (uploadModal) {
-        uploadModal.addEventListener('show.bs.modal', function (event) {
+        uploadModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const form = uploadModal.querySelector('#form-upload-berkas');
             const modalTitle = uploadModal.querySelector('.modal-title');
@@ -23,20 +28,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const inputDeskripsiCu = form.querySelector('#upload_deskripsi_cu');
 
             form.reset();
-            const oldMethodInput = form.querySelector('input[name="_method"]');
-            if (oldMethodInput) oldMethodInput.remove();
+            form.querySelector('input[name="_method"]')?.remove();
 
             const updateUrl = button.dataset.updateUrl;
+
             if (updateUrl) {
                 modalTitle.textContent = 'Ganti Berkas: ' + button.dataset.namaBerkas;
                 form.action = updateUrl;
+
                 const methodInput = document.createElement('input');
                 methodInput.type = 'hidden';
                 methodInput.name = '_method';
                 methodInput.value = 'PUT';
                 form.appendChild(methodInput);
+
                 cuFields.style.display = 'none';
                 inputDeskripsiCu.disabled = true;
+
             } else {
                 const jenisBerkas = button.dataset.jenisBerkas;
                 modalTitle.textContent = 'Upload: ' + button.dataset.namaBerkas;
@@ -56,9 +64,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Mengisi data modal 'edit CU' saat dibuka.
     const editCuModal = document.getElementById('editCuModal');
     if (editCuModal) {
-        editCuModal.addEventListener('show.bs.modal', function (event) {
+        editCuModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const form = editCuModal.querySelector('#form-edit-cu');
             form.action = button.dataset.updateUrl;
@@ -67,18 +76,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Mengisi data modal 'edit peserta' saat dibuka.
     const editPesertaModal = document.getElementById('editPesertaModal');
     if (editPesertaModal) {
-        editPesertaModal.addEventListener('show.bs.modal', function (event) {
+        editPesertaModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const form = editPesertaModal.querySelector('#form-edit-peserta');
             const data = button.dataset;
-            
-            // !! PERBAIKAN UTAMA: Buat URL secara manual di JavaScript !!
-            const baseUrl = "/panel/peserta/";
-            form.action = baseUrl + data.id;
 
-            // Isi semua input field
+            form.action = `/panel/peserta/${data.id}`;
             form.querySelector('#edit_nama_lengkap').value = data.nama_lengkap || '';
             form.querySelector('#edit_nim').value = data.nim || '';
             form.querySelector('#edit_prodi').value = data.prodi || '';
@@ -89,12 +95,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Menangani format input IPK (mengubah koma menjadi titik).
     function initializeIpkInput(modalId, inputId) {
         const modal = document.getElementById(modalId);
         if (modal) {
             const ipkInput = modal.querySelector(inputId);
             if (ipkInput) {
-                ipkInput.addEventListener('input', function (e) {
+                ipkInput.addEventListener('input', function(e) {
                     e.target.value = e.target.value.replace(/,/g, '.');
                 });
             }
@@ -104,3 +111,4 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeIpkInput('tambahPesertaModal', '#tambah_ipk');
     initializeIpkInput('editPesertaModal', '#edit_ipk');
 });
+

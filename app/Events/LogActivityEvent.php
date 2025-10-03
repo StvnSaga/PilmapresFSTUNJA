@@ -15,10 +15,6 @@ class LogActivityEvent
     public $action;
     public $description;
 
-    /**
-     * Create a new event instance.
-     * PERBAIKAN: Tambahkan tanda tanya (?) sebelum User
-     */
     public function __construct(?User $user, $action, $description)
     {
         $this->user = $user;

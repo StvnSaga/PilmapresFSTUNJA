@@ -1,13 +1,3 @@
-/*
-|--------------------------------------------------------------------------
-| app-style.css - Gaya Kustom untuk Halaman Publik PILMAPRES FST
-|--------------------------------------------------------------------------
-|
-| File ini berisi semua gaya kustom untuk landing page dan halaman publik.
-| Dikelompokkan berdasarkan komponen untuk kemudahan maintenance.
-|
-*/
-
 /* === 1. Gaya Global & Utilitas === */
 html {
     scroll-behavior: smooth;
@@ -15,7 +5,7 @@ html {
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #f8f9fa; /* Abu-abu sangat muda sebagai default */
+    background-color: #f8f9fa;
 }
 
 .section-title {
@@ -30,10 +20,9 @@ body {
     color: #FD871F !important;
 }
 
-/* Utilitas untuk garis bawah judul section */
 .underline-accent {
     position: relative;
-    display: inline-block; /* Kunci agar lebar elemen mengikuti teks */
+    display: inline-block;
     padding-bottom: 10px;
 }
 
@@ -41,20 +30,20 @@ body {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%; /* 1. Mulai dari tengah */
-    transform: translateX(-50%); /* 2. Geser ke kiri sejauh setengah lebarnya sendiri */
-    width: 90%; /* 3. Atur lebarnya menjadi 90% */
-    height: 4px;
-    background-color: #FD871F; /* Warna oranye */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    height: 2px;
+    background-color: #FD871F;
     border-radius: 2px;
 }
-/* Memastikan garis bawah tetap di kiri untuk judul yang rata kiri */
+
 .text-md-start .section-title-underline::after,
 .text-start .section-title-underline::after {
     left: 0;
     transform: translateX(0);
 }
-/* Memusatkan garis bawah untuk judul yang di tengah */
+
 .text-center .section-title-underline::after {
     left: 50%;
     transform: translateX(-50%);
@@ -82,7 +71,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    margin-bottom: -15px; /* Efek gambar 'duduk' di bawah section */
+    margin-bottom: -15px;
 }
 
 .btn-brand-orange {
@@ -98,15 +87,13 @@ body {
 }
 
 
-/* === 3. Section Panduan === */
-.criteria-card {
+/* === 3. Section Panduan & Timeline === */
+.criteria-card,
+.timeline-container {
     background-color: #00135E;
 }
 
-
-/* === 4. Section Timeline (Untuk Gambar Statis) === */
 .timeline-container {
-    background-color: #00135E;
     border-radius: 50px;
 }
 
@@ -115,7 +102,7 @@ body {
 }
 
 
-/* === 5. Section Rekam Jejak === */
+/* === 4. Section Rekam Jejak === */
 .winner-card-image {
     height: 180px;
     width: 100%;
@@ -126,16 +113,45 @@ body {
     color: #FD871F;
 }
 
-/* Kustomisasi Carousel Rekam Jejak */
-
 .badge-brand-darkblue {
     background-color: #00135E;
     color: #fff;
 }
 
+.carousel-tahun-box {
+    display: inline-block;
+    background-color: #FD871F;
+    padding: 0.6rem 1.8rem;
+    border-radius: 50px;
+}
+
+.carousel-tahun-title {
+    margin-bottom: 0;
+    padding: 0;
+    color: inherit;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 -2.5rem !important;
+    width: auto !important;
+    height: auto !important;
+    opacity: 1 !important;
+}
+
+.carousel-control-prev {
+    left: 0;
+}
+
+.carousel-control-next {
+    right: 0;
+}
+
 #pemenangCarousel .carousel-item {
-    /* Ini akan memperlambat animasi geser menjadi 1.2 detik */
-    transition: transform 2 s ease-in-out;
+    transition: transform 0.8s ease-in-out;
 }
 
 #pemenangCarousel .carousel-indicators {
@@ -149,16 +165,13 @@ body {
     height: 10px;
     padding: 0;
     margin: 0 5px;
-    text-indent: -999px;
     cursor: pointer;
     background-color: #555;
     background-clip: padding-box;
     border: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+    border-radius: 50%;
     opacity: 0.5;
     transition: opacity .6s ease;
-    border-radius: 50%;
 }
 
 #pemenangCarousel .carousel-indicators button.active {
@@ -167,7 +180,7 @@ body {
 }
 
 
-/* === 6. Halaman Papan Peringkat === */
+/* === 5. Halaman Papan Peringkat === */
 .leaderboard-wrapper {
     position: relative;
 }
@@ -235,7 +248,6 @@ body {
     object-fit: cover;
 }
 
-/* Indikator Tahun Papan Peringkat */
 .year-indicators {
     position: static;
     margin: 2rem auto 0;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard') - Pilmapres Admin</title>
+    <title>@yield('title', 'Dashboard') - Pilmapres FST UNJA</title>
     <link rel="shortcut icon" href="{{ asset('assets/compiled/svg/favicon.svg') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/app-dark.css') }}">
@@ -32,12 +32,11 @@
     @stack('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    {{-- !! KODE JAVASCRIPT BARU YANG LEBIH LENGKAP !! --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Menangani form dengan class 'form-delete'
             document.body.addEventListener('submit', function (event) {
                 const form = event.target;
+
                 if (form.classList.contains('form-delete')) {
                     event.preventDefault();
                     const confirmText = form.dataset.confirmText || 'Data yang dihapus tidak dapat dikembalikan!';
@@ -57,9 +56,30 @@
                         }
                     });
                 }
+                
+                // Logika baru untuk konfirmasi umum
+                if (form.classList.contains('form-confirm')) {
+                    event.preventDefault();
+                    const confirmTitle = form.dataset.confirmTitle || 'Apakah Anda Yakin?';
+                    const confirmText = form.dataset.confirmText || 'Tindakan ini tidak dapat dibatalkan.';
+                    
+                    Swal.fire({
+                        title: confirmTitle,
+                        text: confirmText,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#435ebe',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Lanjutkan!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                }
             });
 
-            // Menangani tombol dengan class 'btn-finalize'
             document.body.addEventListener('click', function (event) {
                 const button = event.target.closest('.btn-finalize');
                 if (button) {
@@ -79,11 +99,10 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Tambahkan input tersembunyi untuk menandakan finalisasi
                             const hiddenInput = document.createElement('input');
                             hiddenInput.type = 'hidden';
-                            hiddenInput.name = button.name; // cth: 'finalisasi_gk'
-                            hiddenInput.value = button.value; // cth: 'true'
+                            hiddenInput.name = button.name;
+                            hiddenInput.value = button.value;
                             form.appendChild(hiddenInput);
                             form.submit();
                         }

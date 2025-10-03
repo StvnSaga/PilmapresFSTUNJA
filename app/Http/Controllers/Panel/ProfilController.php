@@ -3,25 +3,23 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\LogActivity;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use App\Models\User; // <-- TAMBAHKAN INI JIKA BELUM ADA
-use App\Models\LogActivity;
 
 class ProfilController extends Controller
 {
     public function show()
     {
-        // !! TAMBAHKAN LOGIKA INI !!
         $user = Auth::user();
         $logs = LogActivity::where('user_id', $user->id)
-                            ->latest() // Ambil yang terbaru
-                            ->take(5)  // Batasi 5 log saja
+                            ->latest()
+                            ->take(5)
                             ->get();
 
-        // !! UBAH RETURN VIEW UNTUK MENGIRIM DATA LOGS !!
         return view('panel.profil.index', [
             'user' => $user,
             'logs' => $logs,
@@ -30,7 +28,6 @@ class ProfilController extends Controller
 
     public function update(Request $request)
     {
-        // !! PERBAIKAN DI SINI: Ambil model User dari database !!
         $user = User::findOrFail(Auth::id());
 
         $request->validate([
@@ -44,7 +41,7 @@ class ProfilController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        $user->save(); // <-- Sekarang method .save() akan berfungsi
+        $user->save();
 
         return redirect()->route('profil.show')->with('notification', ['type' => 'success', 'message' => 'Profil berhasil diperbarui!']);
     }

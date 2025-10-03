@@ -13,13 +13,11 @@
         @include('partials.panel._notification')
         
         @if ($penilaianLocked)
-            {{-- Mengambil kode alert jika terkunci dari kode lama --}}
             <div class="alert alert-warning">
                 <h4 class="alert-heading">Penilaian Belum Dibuka</h4>
                 <p>Admin belum memulai tahap penilaian untuk periode ini.</p>
             </div>
         @else
-            {{-- Mengambil kode card dan form filter peserta dari kode lama --}}
             <div class="card">
                 <div class="card-body">
                     <form method="GET" action="{{ route('juri.penilaian.bi') }}">
@@ -46,12 +44,18 @@
             @endphp
             <div class="row">
                 <div class="col-lg-8">
+                    {{-- Panel preview dokumen yang akan tetap terlihat saat scroll --}}
                     <div class="card sticky-top">
-                        {{-- Mengambil isi kartu preview dari kode lama --}}
                         <div class="card-body">
-                            <h5 class="card-title mb-3">
-                                "{{ optional($berkasSlideGk)->nama_berkas ?? 'Judul Gagasan Kreatif Tidak Tersedia' }}"
-                            </h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">"{{ optional($berkasSlideGk)->nama_berkas ?? 'Judul Berkas Tidak Tersedia' }}"</h5>
+                                @if($berkasSlideGk)
+                                    <a href="{{ asset('storage/' . $berkasSlideGk->path_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-arrows-fullscreen"></i> Perbesar
+                                    </a>
+                                @endif
+                            </div>
+                            <hr class="my-3">
                             <table class="table table-borderless table-sm">
                                 <tbody>
                                     <tr>
@@ -65,6 +69,7 @@
                                 </tbody>
                             </table>
                             <hr class="my-4">
+                            
                             @if ($berkasSlideGk)
                                 <div class="ratio ratio-16x9">
                                     <iframe src="{{ asset('storage/' . $berkasSlideGk->path_file) }}" title="Preview Slide PDF" allowfullscreen></iframe>
@@ -117,10 +122,7 @@
                                 @if(!$isFinal)
                                 <div class="d-flex gap-2 mt-3">
                                     <button type="submit" class="btn btn-primary flex-grow-1">Simpan Draf</button>
-                                    {{-- !! PERUBAHAN DI SINI: Hapus onclick, tambahkan class & data attribute !! --}}
-                                    <button type="submit" name="finalisasi_bi" value="true" 
-                                            class="btn btn-success btn-finalize"
-                                            data-confirm-text="Anda yakin ingin mengunci penilaian BI ini? Anda tidak akan bisa mengubahnya lagi.">
+                                    <button type="submit" name="finalisasi_bi" value="true" class="btn btn-success btn-finalize" data-confirm-text="Anda yakin ingin mengunci penilaian BI ini? Anda tidak akan bisa mengubahnya lagi.">
                                         Simpan & Kunci
                                     </button>
                                 </div>

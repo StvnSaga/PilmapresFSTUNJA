@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\TahunSeleksi;
+use App\Models\Peserta;
 use Illuminate\Http\Request;
 use App\Exports\RiwayatPeriodeExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\File; // Import File
-use ZipArchive; // Import ZipArchive
+use Illuminate\Support\Facades\File;
+use ZipArchive;
 
 class RiwayatController extends Controller
 {
     public function index()
     {
-        // PERUBAHAN UTAMA: Tambahkan ->where('status', 'selesai')
         $periodeSelesai = TahunSeleksi::where('status', 'selesai')
                                       ->orderBy('tahun', 'desc')
                                       ->get();
@@ -39,7 +39,6 @@ class RiwayatController extends Controller
     {
         $periode = TahunSeleksi::where('tahun', $tahun)->firstOrFail();
         $pesertas = $periode->pesertas()->orderBy('skor_akhir', 'desc')->get();
-
         $pemenang = $pesertas->first();
 
         return view('panel.riwayat.periode-detail', [
@@ -55,10 +54,10 @@ class RiwayatController extends Controller
         $pesertas = $periode->pesertas()->orderBy('skor_akhir', 'desc')->get();
         $fileName = 'Laporan-Riwayat-Pilmapres-' . $tahun . '.xlsx';
 
-        return Excel::download(new RiwayatPeriodeExport($pesertas), $fileName);
+        return Excel::download(new RiwayatPeriodeExport($pesertas, $periode), $fileName);
     }
 
-        public function exportPeriodeDetailZip($tahun)
+    public function exportPeriodeDetailZip($tahun)
     {
         $periode = TahunSeleksi::where('tahun', $tahun)->firstOrFail();
         $pesertas = $periode->pesertas()->orderBy('skor_akhir', 'desc')->get();
@@ -72,11 +71,13 @@ class RiwayatController extends Controller
         }
 
         $namaFileExcel = 'Rekap-Nilai-Pilmapres-' . $tahun . '.xlsx';
-        Excel::store(new RiwayatPeriodeExport($pesertas), $namaFolder . '/' . $namaFileExcel, 'temp');
+        Excel::store(new RiwayatPeriodeExport($pesertas, $periode), $namaFolder . '/' . $namaFileExcel, 'temp');
 
         foreach ($pesertas as $peserta) {
             $folderPeserta = $pathFolderTemp . '/' . $peserta->nama_lengkap . ' - ' . $peserta->nim;
-            if (!File::isDirectory($folderPeserta)) File::makeDirectory($folderPeserta, 0755, true, true);
+            if (!File::isDirectory($folderPeserta)) {
+                File::makeDirectory($folderPeserta, 0755, true, true);
+            }
             
             if ($peserta->foto_path && File::exists(storage_path('app/public/' . $peserta->foto_path))) {
                 File::copy(storage_path('app/public/' . $peserta->foto_path), $folderPeserta . '/Foto Profil.' . pathinfo($peserta->foto_path, PATHINFO_EXTENSION));

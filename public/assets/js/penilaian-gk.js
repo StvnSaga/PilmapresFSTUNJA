@@ -1,8 +1,12 @@
+/**
+ * Mengelola interaktivitas form penilaian Gagasan Kreatif (GK),
+ * termasuk kalkulasi skor dan fitur komentar.
+ */
 document.addEventListener('DOMContentLoaded', function() {
-    // Pastikan form ada di halaman ini sebelum menjalankan script apa pun
+    // Keluar jika form penilaian GK tidak ada di halaman ini.
     if (!document.getElementById('form-penilaian-gk')) return;
 
-    // Bagian 1: Logika Kalkulasi Skor (yang sudah ada)
+    // --- Kalkulasi Skor Otomatis ---
     const scoreInputs = document.querySelectorAll('.score-input');
     const totalPenyajianEl = document.getElementById('total-penyajian');
     const totalSubstansiEl = document.getElementById('total-substansi');
@@ -29,11 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Skor dibagi 10 karena nilai input 5-10 sedangkan bobot persentase
         totalPenyajian /= 10;
         totalSubstansi /= 10;
         totalKualitas /= 10;
-
         const totalGk = totalPenyajian + totalSubstansi + totalKualitas;
 
         totalPenyajianEl.textContent = `${totalPenyajian.toFixed(2)} / 10.00`;
@@ -46,27 +48,24 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('input', calculateTotals);
     });
 
-    // Hitung total awal saat halaman dimuat
-    calculateTotals();
+    calculateTotals(); // Panggil sekali untuk inisialisasi skor saat halaman dimuat.
 
-    // Bagian 2: Logika BARU untuk Fitur Komentar
+    // --- Fitur Tampilkan/Sembunyikan Komentar ---
     const scoringRows = document.querySelectorAll('.scoring-row');
-
     scoringRows.forEach(row => {
         const toggleBtn = row.querySelector('.comment-toggle-btn');
         const commentContainer = row.querySelector('.comment-container');
         const commentTextarea = row.querySelector('.comment-textarea');
 
         if (toggleBtn && commentContainer && commentTextarea) {
-             // Event untuk menampilkan/menyembunyikan textarea saat ikon diklik
+            // Event untuk toggle area komentar.
             toggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Cek apakah sedang tersembunyi, lalu ubah statusnya
                 const isHidden = commentContainer.style.display === 'none' || commentContainer.style.display === '';
                 commentContainer.style.display = isHidden ? 'block' : 'none';
             });
 
-            // Event untuk mengubah warna ikon jika ada teks di dalamnya
+            // Event untuk mengubah warna ikon jika ada teks di dalam komentar.
             commentTextarea.addEventListener('input', function() {
                 if (this.value.trim() !== '') {
                     toggleBtn.classList.add('text-primary');

@@ -40,7 +40,7 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route('login.authenticate') }}" method="POST" class="text-start mt-3">
+                            <form action="{{ route('login') }}" method="POST" class="text-start mt-3">
                                 @csrf
 
                                 <div class="mb-1">
@@ -49,13 +49,18 @@
                                 </div>
 
                                 <div class="mb-2">
-                                    <label for="password" class="form-label fw-semibold">Kata Sandi</label>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label for="password" class="form-label fw-semibold">Kata Sandi</label>
+                                        {{-- TAMBAHKAN LINK LUPA PASSWORD DI SINI --}}
+                                       
+                                    </div>
                                     <div class="input-group">
                                         <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan kata sandi" required>
                                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                             <i class="bi bi-eye"></i>
                                         </button>
                                     </div>
+                                     <a href="{{ route('password.request') }}" class="small text-muted">Lupa Kata Sandi?</a>
                                 </div>
 
                                 <div class="d-grid mt-4 w-50">

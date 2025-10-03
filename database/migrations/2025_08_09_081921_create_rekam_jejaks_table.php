@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tahun_seleksi_id')->constrained('tahun_seleksis');
             $table->foreignId('peserta_id')->constrained('pesertas');
-            $table->integer('peringkat'); // 1, 2, atau 3
+            $table->integer('peringkat');
             $table->text('deskripsi_singkat')->nullable();
             $table->string('foto_path')->nullable();
             $table->timestamps();

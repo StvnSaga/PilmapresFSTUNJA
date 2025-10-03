@@ -11,8 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Baris ini akan mendaftarkan alias middleware Anda
-        // dari file app/Http/Kernel.php
+        // Mendaftarkan alias middleware untuk role-based access.
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'panitia' => \App\Http\Middleware\PanitiaMiddleware::class,

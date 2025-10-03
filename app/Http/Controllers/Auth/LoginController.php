@@ -3,49 +3,54 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Events\LogActivityEvent;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth; // BAGIAN PENTING 1: Impor facade Auth
 
 class LoginController extends Controller
 {
-    public function showLoginForm()
+    use AuthenticatesUsers;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return view('auth.login');
+        $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
     }
 
-    public function authenticate(Request $request)
+    /**
+     * Mengarahkan pengguna ke halaman yang sesuai berdasarkan role mereka
+     * setelah berhasil login.
+     */
+    public function redirectTo()
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        // BAGIAN PENTING 2: Gunakan Auth::user() untuk mendapatkan data pengguna
+        $user = Auth::user();
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-            LogActivityEvent::dispatch($user, 'login', 'User ' . $user->name . ' berhasil login.');
-
-            if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard'));
-            } elseif ($user->role === 'panitia') {
-                return redirect()->intended(route('panitia.dashboard'));
-            } elseif ($user->role === 'juri') {
-                return redirect()->intended(route('juri.dashboard'));
+        if ($user) {
+            switch ($user->role) {
+                case 'admin':
+                    return '/panel/dashboard-admin';
+                case 'panitia':
+                    return '/panel/dashboard';
+                case 'juri':
+                    return '/panel/dashboard-juri';
+                default:
+                    return '/'; // Fallback untuk role yang tidak dikenal
             }
         }
-
-        return back()->withErrors([
-            'email' => 'Email atau password yang diberikan tidak cocok.',
-        ])->onlyInput('email');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/');
+        
+        // Fallback jika user tidak ditemukan (seharusnya tidak terjadi setelah login)
+        return $this->redirectTo;
     }
 }

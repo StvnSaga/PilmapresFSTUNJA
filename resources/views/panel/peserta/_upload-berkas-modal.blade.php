@@ -7,18 +7,12 @@
                 <div class="modal-body">
                     <input type="hidden" id="upload_jenis_berkas" name="jenis_berkas">
                     <input type="hidden" id="upload_nama_berkas_wajib" name="nama_berkas">
-                    
-                    {{-- Bagian ini hanya untuk CU --}}
                     <div id="cu-fields" style="display: none;">
                         <div class="form-group">
                             <label for="upload_deskripsi_cu">Deskripsi Prestasi/Aktivitas</label>
                             <input type="text" class="form-control" id="upload_deskripsi_cu" name="nama_berkas_cu" required>
                         </div>
-                        
-                        {{-- !! BLOK "TINGKAT" DIHAPUS DARI SINI !! --}}
-
-                    </div>
-                    
+                    </div> 
                     <div class="form-group">
                         <label for="file">Pilih File (PDF, JPG, PNG - Maks 2MB)</label>
                         <input type="file" class="form-control" name="file" required>
