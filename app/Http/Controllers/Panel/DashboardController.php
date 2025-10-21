@@ -22,7 +22,7 @@ class DashboardController extends Controller
 
         if ($role == 'admin') {
             $periodeAktif = TahunSeleksi::where('is_active', true)->first();
-            
+
             $statistik = [
                 'jumlahPanitia' => User::where('role', 'panitia')->count(),
                 'jumlahJuri' => User::where('role', 'juri')->count(),
@@ -51,7 +51,7 @@ class DashboardController extends Controller
                 $jumlahTerverifikasi = $pesertaDiPeriode->clone()->where('status_verifikasi', 'diverifikasi')->count();
                 $jumlahJuriGk = User::where('role', 'juri')->where('jenis_juri', 'GK')->count();
                 $jumlahJuriBi = User::where('role', 'juri')->where('jenis_juri', 'BI')->count();
-                
+
                 $progresGkSelesai = Penilaian::whereIn('peserta_id', $pesertaIds)
                     ->whereNotNull('total_skor_gk')
                     ->whereHas('juri', fn($q) => $q->where('jenis_juri', 'GK'))
@@ -61,24 +61,24 @@ class DashboardController extends Controller
                     ->whereNotNull('total_skor_bi')
                     ->whereHas('juri', fn($q) => $q->where('jenis_juri', 'BI'))
                     ->count();
-                
+
                 $statistik = [
                     'jumlahPeserta' => $jumlahPeserta,
-                    'jumlahJuri' => User::where('role', 'juri')->count(), 
+                    'jumlahJuri' => User::where('role', 'juri')->count(),
                     'jumlahTerverifikasi' => $jumlahTerverifikasi,
                     'progresCu' => Berkas::whereIn('peserta_id', $pesertaIds)->where('jenis_berkas', 'CU')->where('skor', '>', 0)->distinct('peserta_id')->count(),
                     'progresGk' => "$progresGkSelesai dari " . ($jumlahTerverifikasi * $jumlahJuriGk),
                     'progresBi' => "$progresBiSelesai dari " . ($jumlahTerverifikasi * $jumlahJuriBi),
                 ];
-                
+
                 if ($jumlahTerverifikasi > 0) {
                     $avgScores = Peserta::where('tahun_seleksi_id', $periodeAktif->id)
-                                        ->where('status_verifikasi', 'diverifikasi')
-                                        ->select(
-                                            DB::raw('AVG(total_skor_cu) as avg_cu'),
-                                            DB::raw('AVG(total_skor_gk) as avg_gk'),
-                                            DB::raw('AVG(total_skor_bi) as avg_bi')
-                                        )->first();
+                        ->where('status_verifikasi', 'diverifikasi')
+                        ->select(
+                            DB::raw('AVG(total_skor_cu) as avg_cu'),
+                            DB::raw('AVG(total_skor_gk) as avg_gk'),
+                            DB::raw('AVG(total_skor_bi) as avg_bi')
+                        )->first();
 
                     $chartData = [
                         'categories' => ['Capaian Unggulan (CU)', 'Gagasan Kreatif (GK)', 'Bahasa Inggris (BI)'],
@@ -89,31 +89,38 @@ class DashboardController extends Controller
                         ]
                     ];
                 } else {
-                     $chartData = [
+                    $chartData = [
                         'categories' => ['Capaian Unggulan (CU)', 'Gagasan Kreatif (GK)', 'Bahasa Inggris (BI)'],
                         'series' => [0, 0, 0]
                     ];
                 }
-                
+
                 if ($jumlahPeserta > 0) {
                     $semuaPeserta = $pesertaDiPeriode->clone()->get();
-                    $pesertaSiapVerifikasi = $semuaPeserta->filter(fn($p) => $p->status_verifikasi == 'menunggu' && $p->berkas_lengkap)->take(5);
-                    $pesertaBelumLengkapBerkas = $semuaPeserta->filter(fn($p) => !$p->berkas_lengkap)->take(5);
-                    
+                    $pesertaSiapVerifikasi = $semuaPeserta
+                        ->filter(fn($p) => $p->status_verifikasi == 'menunggu' && $p->berkas_lengkap)
+                        ->sortBy('nama_lengkap');
+                    $pesertaBelumLengkapBerkas = $semuaPeserta
+                        ->filter(fn($p) => !$p->berkas_lengkap)
+                        ->sortBy('nama_lengkap');
                     $pesertaPerluDinilaiCu = Peserta::where('tahun_seleksi_id', $periodeAktif->id)
                         ->where('status_verifikasi', 'diverifikasi')
                         ->whereDoesntHave('berkas', function ($query) {
                             $query->where('jenis_berkas', 'CU')->where('status_penilaian', 'final');
                         })
-                        ->latest()->take(5)->get();
+                        ->orderBy('nama_lengkap', 'asc')
+                        ->get();
                 }
             } else {
-                 $statistik = [
-                    'jumlahPeserta' => 0, 'jumlahJuri' => User::where('role', 'juri')->count(),
-                    'jumlahTerverifikasi' => 0, 'progresCu' => 0,
-                    'progresGk' => '0 dari 0', 'progresBi' => '0 dari 0',
+                $statistik = [
+                    'jumlahPeserta' => 0,
+                    'jumlahJuri' => User::where('role', 'juri')->count(),
+                    'jumlahTerverifikasi' => 0,
+                    'progresCu' => 0,
+                    'progresGk' => '0 dari 0',
+                    'progresBi' => '0 dari 0',
                 ];
-                 $chartData = [
+                $chartData = [
                     'categories' => ['Capaian Unggulan (CU)', 'Gagasan Kreatif (GK)', 'Bahasa Inggris (BI)'],
                     'series' => [0, 0, 0]
                 ];
@@ -142,13 +149,13 @@ class DashboardController extends Controller
                     ->where('status_verifikasi', 'diverifikasi')
                     ->orderBy('nama_lengkap')
                     ->get();
-                
+
                 foreach ($pesertas as $peserta) {
                     Penilaian::firstOrCreate(['peserta_id' => $peserta->id, 'juri_id' => $user->id]);
                 }
 
                 $pesertas->load(['penilaians' => fn($q) => $q->where('juri_id', $user->id)]);
-                
+
                 $statistik['totalPeserta'] = $pesertas->count();
 
                 // Menghitung statistik penilaian berdasarkan spesialisasi juri.
@@ -163,7 +170,7 @@ class DashboardController extends Controller
                         return $penilaian && $penilaian->total_skor_bi !== null;
                     })->count();
                 }
-                
+
                 $statistik['perluDinilai'] = $statistik['totalPeserta'] - $statistik['selesaiDinilai'];
             }
 

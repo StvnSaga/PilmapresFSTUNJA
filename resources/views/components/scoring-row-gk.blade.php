@@ -9,7 +9,6 @@
         <div class="col-sm-7">
             <label class="form-label mb-0">
                 {{ $criterion['label'] }}<br>
-                <small class="text-muted">(Bobot: {{ $criterion['bobot'] }}%)</small>
             </label>
         </div>
         <div class="col-sm-5 d-flex align-items-center">
