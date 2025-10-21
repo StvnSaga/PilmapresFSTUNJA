@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    const fileInput = document.getElementById('upload_file');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Atur batas maksimal ukuran file di sini (dalam MB)
+                const maxSizeInMB = 5;
+                const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+                if (file.size > maxSizeInBytes) {
+                    // Tampilkan notifikasi error menggunakan SweetAlert2
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: `Ukuran file tidak boleh melebihi ${maxSizeInMB} MB.`,
+                    });
+
+                    // Kosongkan input file agar file yang salah tidak terkirim
+                    event.target.value = '';
+                }
+            }
+        });
+    }
+
     // Menyimpan state accordion berkas yang terakhir dibuka.
     const accordionElement = document.getElementById('accordionBerkas');
     if (accordionElement) {
@@ -111,4 +135,3 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeIpkInput('tambahPesertaModal', '#tambah_ipk');
     initializeIpkInput('editPesertaModal', '#edit_ipk');
 });
-

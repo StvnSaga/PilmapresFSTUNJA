@@ -66,7 +66,7 @@ class BerkasController extends Controller
     public function update(Request $request, Berkas $berkas)
     {
         $request->validate([
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'nama_berkas_cu' => 'sometimes|required|string|max:255',
             'tingkat' => 'sometimes|required|string',
         ]);

@@ -1,7 +1,10 @@
 <div class="modal fade" id="uploadBerkasModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title" id="uploadBerkasModalLabel">Upload Berkas</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadBerkasModalLabel">Upload Berkas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
             <form id="form-upload-berkas" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
@@ -12,13 +15,17 @@
                             <label for="upload_deskripsi_cu">Deskripsi Prestasi/Aktivitas</label>
                             <input type="text" class="form-control" id="upload_deskripsi_cu" name="nama_berkas_cu" required>
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
-                        <label for="file">Pilih File (PDF, JPG, PNG - Maks 2MB)</label>
-                        <input type="file" class="form-control" name="file" required>
+                        <label for="upload_file">Pilih File (PDF, JPG, PNG - Maks 5MB)</label>
+                        {{-- PERBAIKAN DI SINI: Menambahkan id="upload_file" --}}
+                        <input type="file" class="form-control" name="file" id="upload_file" required>
                     </div>
                 </div>
-                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary">Simpan Berkas</button></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Berkas</button>
+                </div>
             </form>
         </div>
     </div>
